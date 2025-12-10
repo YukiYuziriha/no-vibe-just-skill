@@ -29,6 +29,29 @@ Abstractions are intentionally kept minimal so that behaviour is easy to audit a
 - Python **3.8+**
 - `pip` and the ability to create virtual environments.
 
+### 3.0. Installing Python, pip, and venv
+
+- **Windows**
+  - Download the latest Python 3.x installer from `https://www.python.org/downloads/windows/`.
+  - During installation, **check** the box “Add Python to PATH”.
+  - `pip` and the `venv` module are included by default in official installers.
+
+- **macOS**
+  - Preferred: install Python via Homebrew:
+    ```bash
+    brew install python
+    ```
+  - This provides `python3`, `pip3`, and the `venv` module.
+
+- **Linux (Debian/Ubuntu-based)**
+  - Install Python, pip, and venv support via:
+    ```bash
+    sudo apt update
+    sudo apt install python3 python3-pip python3-venv
+    ```
+
+Once `python`/`python3` and `pip` are available, follow the OS-specific steps below to create a virtual environment and install dependencies.
+
 ### 3.1. Windows
 
 1. **Open a terminal in this folder**
@@ -130,7 +153,23 @@ Configuration is provided exclusively via environment variables (12-factor style
      ```
    - Save the file. On startup, the script uses `python-dotenv` to load these values.
 
-Alternatively, you can set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` directly in the environment without using `.env`.
+Alternatively, you can set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` directly in the environment without using `.env`.  
+For example:
+- Linux/macOS (bash/zsh):
+  ```bash
+  export TELEGRAM_BOT_TOKEN="123456:ABC-DEF..."
+  export TELEGRAM_CHAT_ID="123456789"
+  ```
+- Windows PowerShell:
+  ```powershell
+  $env:TELEGRAM_BOT_TOKEN="123456:ABC-DEF..."
+  $env:TELEGRAM_CHAT_ID="123456789"
+  ```
+- Windows Command Prompt:
+  ```cmd
+  set TELEGRAM_BOT_TOKEN=123456:ABC-DEF...
+  set TELEGRAM_CHAT_ID=123456789
+  ```
 
 ### 5.2. Usage
 ```bash

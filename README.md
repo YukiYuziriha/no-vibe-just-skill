@@ -1,16 +1,16 @@
-# Polza Outreach Technical Task
+# Тестовое задание Polza — no-vibe-just-skill
 
-## 1. Overview
-This repository contains a compact yet production-minded solution for the Polza technical task:
+## 1. Обзор
 
-1. **MX Checker** — validates email domains and MX records for a list of addresses.
-2. **Telegram Sender** — sends arbitrary text content to a Telegram chat via the Bot API.
-3. **Architecture** — an outreach system design for ~1200 emails/day in `ARCHITECTURE.md`.
+Этот репозиторий — небольшое, но аккуратно спроектированное решение тестового задания Polza:
 
-The implementation emphasises robustness, predictable error handling, and clarity over cleverness. 
-Abstractions are intentionally kept minimal so that behaviour is easy to audit and operate.
+1. **MX Checker** — читает файл со списком email-адресов и для каждого проверяет, существует ли домен и настроены ли MX-записи.
+2. **Telegram Sender** — берёт текст из файла и отправляет его в приватный Telegram-чат через бота.
+3. **ARCHITECTURE.md** — описывает архитектуру рассылки примерно на 1200 адресов в сутки с учётом стоимости, рисков и репутации доменов.
 
-## 2. Project Structure
+Цель кода — не «показать трюки», а вести себя как надёжный маленький сервис: явные таймауты, предсказуемые статусы, понятные ошибки и минимум лишних абстракций.
+
+## 2. Структура проекта
 ```text
 .
 ├── mx_checker.py        # Task 1: MX checker CLI
@@ -24,46 +24,49 @@ Abstractions are intentionally kept minimal so that behaviour is easy to audit a
 └── requirements.txt     # dnspython, requests, python-dotenv
 ```
 
-## 3. Requirements & Installation
+## 3. Требования и установка
 
-- Python **3.8+**
-- `pip` and the ability to create virtual environments.
+- Установленный **Python 3.8+**.
+- Доступен `pip` и модуль `venv` для создания виртуального окружения.
 
-### 3.0. Installing Python, pip, and venv
+### 3.1. Установка Python, pip и venv
 
 - **Windows**
-  - Download the latest Python 3.x installer from `https://www.python.org/downloads/windows/`.
-  - During installation, **check** the box “Add Python to PATH”.
-  - `pip` and the `venv` module are included by default in official installers.
+  - Скачайте официальный установщик Python 3.x с сайта  
+    `https://www.python.org/downloads/windows/`.
+  - В инсталляторе обязательно поставьте галочку **“Add Python to PATH”**.
+  - `pip` и поддержка виртуальных окружений (`venv`) будут установлены автоматически.
 
 - **macOS**
-  - Preferred: install Python via Homebrew:
+  - Удобнее всего установить Python через Homebrew:
     ```bash
     brew install python
     ```
-  - This provides `python3`, `pip3`, and the `venv` module.
+  - После этого будут доступны команды `python3`, `pip3` и модуль `venv`.
 
-- **Linux (Debian/Ubuntu-based)**
-  - Install Python, pip, and venv support via:
+- **Linux (Debian / Ubuntu и похожие)**
+  - Установите Python и необходимые пакеты:
     ```bash
     sudo apt update
     sudo apt install python3 python3-pip python3-venv
     ```
 
-Once `python`/`python3` and `pip` are available, follow the OS-specific steps below to create a virtual environment and install dependencies.
+### 3.2. Виртуальное окружение и зависимости
 
-### 3.1. Windows
+Рекомендуется работать в отдельном виртуальном окружении, чтобы не загрязнять системный Python.
 
-1. **Open a terminal in this folder**
-   - Open the project folder in Explorer.
-   - Click the address bar, type `cmd`, press Enter  
-     *(or: Shift + right click → “Open PowerShell window here”)*.
-2. **Create a virtual environment**
+#### Windows
+
+1. Откройте терминал в папке проекта:
+   - Откройте папку в Проводнике.
+   - В адресной строке введите `cmd` и нажмите Enter  
+     *(или Shift + правый клик по пустому месту → «Открыть окно PowerShell здесь»)*.
+2. Создайте виртуальное окружение:
    ```cmd
    python -m venv .venv
    ```
-3. **Activate it**
-   - Command Prompt:
+3. Активируйте его:
+   - Командная строка (cmd):
      ```cmd
      .venv\Scripts\activate
      ```
@@ -71,91 +74,98 @@ Once `python`/`python3` and `pip` are available, follow the OS-specific steps be
      ```powershell
      .venv\Scripts\Activate.ps1
      ```
-     *(If you see a security error, run `Set-ExecutionPolicy Unrestricted -Scope Process` once.)*
-4. **Install dependencies**
+     *(если PowerShell ругается на политику выполнения, выполните один раз:  
+     `Set-ExecutionPolicy Unrestricted -Scope Process`)*  
+4. Установите зависимости:
    ```cmd
    pip install -r requirements.txt
    ```
 
-### 3.2. Linux / macOS
+#### Linux / macOS
 
-1. **Open Terminal** and move to the project folder:
+1. Откройте терминал и перейдите в папку проекта:
    ```bash
    cd /path/to/no-vibe-just-skill
    ```
-2. **Create a virtual environment**
+2. Создайте виртуальное окружение:
    ```bash
    python3 -m venv .venv
    ```
-3. **Activate it**
+3. Активируйте его:
    ```bash
    source .venv/bin/activate
    ```
-4. **Install dependencies**
+4. Установите зависимости:
    ```bash
    pip install -r requirements.txt
    ```
 
 ---
 
-## 4. Task 1 — MX Checker (`mx_checker.py`)
+## 4. Задача 1 — MX Checker (`mx_checker.py`)
 
-The MX checker consumes a text file with one email per line, validates the domain, and inspects MX records using `dnspython`.
+`mx_checker.py` читает файл с email-адресами (по одному на строку), вытаскивает домен и проверяет наличие MX-записей с помощью `dnspython`.
 
-### 4.1. Usage
+### 4.1. Запуск
+
 ```bash
 python mx_checker.py --input emails_example.txt
 ```
 
-Arguments:
-- `--input` / `-i` — path to a file with one email per line (default: `emails_example.txt`).
+Аргументы:
+- `--input` / `-i` — путь к файлу со списком адресов (по умолчанию `emails_example.txt`).
 
-### 4.2. Behaviour & Statuses
-For each non-empty line, the script prints exactly one of the following statuses:
+### 4.2. Статусы
 
-- `<email>: домен валиден` — the domain exists and has at least one MX record.
-- `<email>: домен отсутствует` — the domain does not exist or has no reachable nameservers.
-- `<email>: MX-записи отсутствуют или некорректны` — the domain exists but MX lookup fails or returns no usable records.
+Для каждой непустой строки скрипт печатает **ровно одну** строку одного из трёх видов:
 
-Malformed addresses (e.g. missing `@` or with multiple `@`) are treated as `"домен отсутствует"` to simplify downstream list-cleaning logic.
+- `<email>: домен валиден` — домен существует и у него есть хотя бы одна MX-запись.
+- `<email>: домен отсутствует` — домен не существует или у него нет доступных DNS-серверов.
+- `<email>: MX-записи отсутствуют или некорректны` — домен существует, но MX-записи не найдены или ответ некорректный.
 
-### 4.3. Error Handling
-- If the input file does not exist, the script prints a clear error and exits with code `1`.
-- DNS queries use a **5-second timeout** to avoid hanging on slow or misconfigured name servers, which is common in bulk outreach scenarios.
-- Unexpected DNS/network errors are treated as `"MX-записи отсутствуют или некорректны"` and do not crash the process.
+Если адрес явно сломан (нет `@` или их больше одной), он тоже попадает в категорию `"домен отсутствует"`.  
+Так проще использовать вывод для чистки списков — не нужно отдельной ветки для «битых» адресов.
+
+### 4.3. Обработка ошибок
+
+- Если входной файл не найден, выводится понятная ошибка и процесс завершится с кодом `1`.
+- DNS-запросы выполняются с таймаутом **5 секунд**, чтобы скрипт не зависал на медленных или неправильно настроенных DNS-серверах.
+- Любые неожиданные DNS/сетевые ошибки трактуются как `"MX-записи отсутствуют или некорректны"` — скрипт не падает, а аккуратно помечает проблемный домен.
 
 ---
 
-## 5. Task 2 — Telegram Sender (`telegram_sender.py`)
+## 5. Задача 2 — Telegram Sender (`telegram_sender.py`)
 
-The Telegram sender reads the full contents of a text file and posts it to a configured Telegram chat using a bot token.
-Configuration is provided exclusively via environment variables (12-factor style) and an optional `.env` file for local development.
+`telegram_sender.py` полностью считывает текст из указанного файла и отправляет его в Telegram-чат через Bot API.  
+Все настройки берутся из переменных окружения (12-factor подход) и при локальной разработке могут приходить из файла `.env`.
 
-### 5.1. Configuration
+### 5.1. Настройка
 
-1. **Create a bot token**
-   - In Telegram, search for **@BotFather**.
-   - Send `/newbot` and follow the prompts.
-   - Copy the token you receive (e.g. `123456:ABC-DEF...`).
+1. **Создайте бота и получите токен**
+   - В Telegram найдите **@BotFather**.
+   - Отправьте ему `/newbot` и следуйте инструкциям.
+   - В ответ он пришлёт токен вида `123456:ABC-DEF...` — сохраните его.
 
-2. **Obtain your chat ID**
-   - In Telegram, search for **@userinfobot**.
-   - Click “Start”.
-   - Copy the number shown as `Id:` (e.g. `123456789`).
+2. **Получите свой chat_id**
+   - В Telegram найдите **@userinfobot**.
+   - Нажмите «Start».
+   - В сообщении бот покажет поле `Id:` — это и есть `chat_id` (например, `123456789`).
 
-3. **Populate `.env`**
-   - In this folder there is a file `.env.example`.
-   - Make a copy named `.env` (or rename it to `.env`).
-   - Open `.env` in a text editor and fill in your values:
+3. **Настройте `.env`**
+   - В корне проекта есть файл `.env.example`.
+   - Скопируйте его в `.env` (или просто переименуйте).
+   - Откройте `.env` в любом редакторе и подставьте свои значения:
      ```text
      TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
      TELEGRAM_CHAT_ID=123456789
      ```
-   - Save the file. On startup, the script uses `python-dotenv` to load these values.
+   - Сохраните файл. При запуске скрипта `python-dotenv` загрузит эти переменные окружения.
 
-Alternatively, you can set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` directly in the environment without using `.env`.  
-For example:
-- Linux/macOS (bash/zsh):
+4. **Вариант без `.env` — только переменные окружения**
+
+Можно вообще не использовать `.env`, а выставить переменные окружения вручную:
+
+- Linux / macOS (bash/zsh):
   ```bash
   export TELEGRAM_BOT_TOKEN="123456:ABC-DEF..."
   export TELEGRAM_CHAT_ID="123456789"
@@ -165,71 +175,73 @@ For example:
   $env:TELEGRAM_BOT_TOKEN="123456:ABC-DEF..."
   $env:TELEGRAM_CHAT_ID="123456789"
   ```
-- Windows Command Prompt:
+- Windows Command Prompt (cmd):
   ```cmd
   set TELEGRAM_BOT_TOKEN=123456:ABC-DEF...
   set TELEGRAM_CHAT_ID=123456789
   ```
 
-### 5.2. Usage
+### 5.2. Запуск
+
 ```bash
 python telegram_sender.py --input message_example.txt
 ```
 
-Arguments:
-- `--input` / `-i` — path to the text file whose contents should be sent (default: `message_example.txt`).
+Аргументы:
+- `--input` / `-i` — путь к текстовому файлу, содержимое которого нужно отправить (по умолчанию `message_example.txt`).
 
-### 5.3. Behaviour & Error Handling
+### 5.3. Поведение и ошибки
 
-- On startup, the script validates that both `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` are present.
-  If either is missing, it prints a configuration error and exits with code `1`.
-- The message body is read as UTF‑8, so non-ASCII characters in `message_example.txt` are preserved.
-- Requests to `https://api.telegram.org/bot<TOKEN>/sendMessage`:
-  - Use a **10-second timeout** to avoid indefinite hangs on network glitches.
-  - Treat non-`200` HTTP statuses as errors and print the response body.
-  - Additionally verify the `"ok"` flag in the JSON response before reporting success.
-- All `requests`-level network exceptions (DNS failure, timeout, connection reset, etc.) are caught and reported with a human-readable message.
-
----
-
-## 6. Task 3 — Architecture (`ARCHITECTURE.md`)
-
-High-level architecture for sending ~1200 emails/day is documented in `ARCHITECTURE.md`.  
-It covers:
-
-- Domain and mailbox strategy to protect reputation.
-- Scheduling and routing logic across multiple senders.
-- Bounce/complaint-driven health checks and automatic pausing.
-- Monitoring, metrics, and an alerting channel (Telegram bot).
-- A rough cost estimate for domains, infrastructure, and ESP usage.
+- При запуске скрипт проверяет, что заданы `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_ID`.  
+  Если чего-то не хватает, выводится понятное сообщение и процесс завершается с кодом `1`.
+- Файл с текстом читается в кодировке UTF‑8, так что русские буквы и спецсимволы никак не ломаются.
+- Запрос к `https://api.telegram.org/bot<TOKEN>/sendMessage`:
+  - выполняется с таймаутом **10 секунд**;
+  - любая HTTP-ошибка (не `200`) печатается вместе с телом ответа;
+  - дополнительно проверяется флаг `"ok"` в JSON, прежде чем считать отправку успешной.
+- Любые сетевые исключения (`requests.exceptions.RequestException`) — таймауты, проблемы с DNS, обрывы соединения — перехватываются и выводятся в человекочитаемом виде.
 
 ---
 
-## 7. Testing
+## 6. Задача 3 — Архитектура (`ARCHITECTURE.md`)
 
-The solution was exercised with a small but representative set of scenarios:
+Файл `ARCHITECTURE.md` описывает архитектуру рассылки примерно на **1200 адресов в сутки** с учётом:
+
+- стратегии по доменам и ящикам (несколько доменов, несколько ящиков на домен, тёплый / активный статус);
+- распределения нагрузки и суточных лимитов на домен/ящик;
+- мониторинга bounce/spam-жалоб и автоматических пауз;
+- рисков российских и зарубежных почтовых провайдеров;
+- примерной стоимости доменов, VPS и почтовых сервисов.
+
+Текст ориентирован на практическое использование: можно собрать подобную схему в реальной жизни с минимальными корректировками.
+
+---
+
+## 7. Тестирование
+
+Решение прогонялось на небольшом, но показательном наборе сценариев:
 
 - **MX Checker**
-  - `emails_example.txt` includes:
-    - Valid consumer domains (`gmail.com`, `ya.ru`).
-    - A placeholder domain (`example.com`).
-    - A clearly non-existent domain (`nonexistentdomain12345.com`).
-    - A malformed email (`brokenemail.com`).
-  - Verified that each case maps to the expected of the three statuses.
+  - `emails_example.txt` содержит:
+    - реальные потребительские домены (`gmail.com`, `ya.ru`);
+    - условный домен (`example.com`);
+    - заведомо несуществующий домен (`nonexistentdomain12345.com`);
+    - заведомо битый адрес (`brokenemail.com`).
+  - Для каждого проверено, что возвращается один из трёх ожидаемых статусов, и формат строки не «плавает».
 
 - **Telegram Sender**
-  - Successful path with a valid token/chat ID and a short UTF‑8 text message.
-  - Failure modes:
-    - Missing environment variables (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`).
-    - Network-level failure (simulated) resulting in a clear error and non-zero exit code.
+  - Успешная отправка с валидным токеном и chat_id, сообщение на русском языке.
+  - Ошибочные сценарии:
+    - отсутствуют `TELEGRAM_BOT_TOKEN` или `TELEGRAM_CHAT_ID`;
+    - сетевые ошибки / таймауты — скрипт не падает молча, а выдаёт явное сообщение и ненулевой код выхода.
 
-The focus is on deterministic behaviour and clear failure modes rather than exhaustive test coverage for every edge case.
+Цель тестирования — не полное покрытие всех возможных исключений, а проверка того, что скрипты ведут себя **детерминированно** и предсказуемо в типичных и проблемных сценариях.
 
 ---
 
-## 8. Quality Notes
+## 8. Заметки о качестве
 
-- The scripts are intentionally **small, linear, and explicit** so that future changes can be made without guessing hidden abstractions.
-- External dependencies (`dnspython`, `requests`, `python-dotenv`) are limited to what is strictly necessary for DNS resolution, HTTP calls, and configuration loading.
-- Timeouts and error handling are tuned for **bulk outreach** workloads: the system prefers to fail fast on slow or misconfigured infrastructure instead of blocking the entire job.
-- All user-facing messages are designed to be copy-paste friendly for support logs and automation.
+- Скрипты специально сделаны **линейными и читаемыми**: минимум «магии», максимум явных шагов.
+- Внешние зависимости (`dnspython`, `requests`, `python-dotenv`) ограничены тем, без чего нельзя обойтись для DNS, HTTP и загрузки настроек.
+- Таймауты и обработка ошибок подобраны исходя из сценария массовой рассылки: лучше быстро пометить адрес как проблемный, чем «повиснуть» на одном запросе.
+- Все сообщения и статусы можно без доработки копировать в логи, тикеты и простые системы автоматизации.

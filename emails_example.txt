@@ -1,0 +1,5 @@
+user@gmail.com
+user@ya.ru
+user@example.com
+user@nonexistentdomain12345.com
+brokenemail.com

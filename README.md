@@ -6,11 +6,56 @@ This repository contains solutions for the Polza technical test task. It include
 2.  **Telegram Sender:** A script to send messages to a Telegram chat.
 3.  **Architecture:** A proposed architecture for a cold outreach system (`ARCHITECTURE.md`).
 
-## 2. Installation
-Requires **Python 3.8+**.
+## 2. Installation & Setup
 
-1.  Clone the repository.
-2.  Install dependencies:
+You need **Python 3.8+** installed.
+
+### Windows
+
+1.  **Open the terminal in this folder:**
+    *   Open the folder in File Explorer.
+    *   Click the address bar at the top, type `cmd`, and press Enter.
+    *   *Alternatively: Hold `Shift`, right-click empty space, and select "Open PowerShell window here".*
+
+2.  **Create a virtual environment:**
+    ```cmd
+    python -m venv .venv
+    ```
+
+3.  **Activate it:**
+    *   **Command Prompt (cmd):**
+        ```cmd
+        .venv\Scripts\activate
+        ```
+    *   **PowerShell:**
+        ```powershell
+        .venv\Scripts\Activate.ps1
+        ```
+    *(If you see a security error in PowerShell, run `Set-ExecutionPolicy Unrestricted -Scope Process` first)*
+
+4.  **Install libraries:**
+    ```cmd
+    pip install -r requirements.txt
+    ```
+
+### Linux / macOS
+
+1.  **Open Terminal** and `cd` to this project folder:
+    ```bash
+    cd /path/to/downloaded/folder
+    ```
+
+2.  **Create a virtual environment:**
+    ```bash
+    python3 -m venv .venv
+    ```
+
+3.  **Activate it:**
+    ```bash
+    source .venv/bin/activate
+    ```
+
+4.  **Install libraries:**
     ```bash
     pip install -r requirements.txt
     ```

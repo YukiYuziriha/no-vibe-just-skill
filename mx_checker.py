@@ -1,8 +1,9 @@
 import argparse
 import sys
 import dns.resolver
+from typing import Optional
 
-def check_mx(email):
+def check_mx(email: str) -> None:
     email = email.strip()
     if not email:
         return None
@@ -11,11 +12,11 @@ def check_mx(email):
         print(f"{email}: домен отсутствует")
         return
 
-    domain = email.split("@")[1].strip()
+    domain: str = email.split("@")[1].strip()
 
     try:
         # Try to resolve MX records
-        answers = dns.resolver.resolve(domain, "MX", lifetime=5)
+        answers: dns.resolver.Answer = dns.resolver.resolve(domain, "MX", lifetime=5)
         if answers:
             print(f"{email}: домен валиден")
         else:
@@ -30,14 +31,14 @@ def check_mx(email):
         # Other exceptions (Timeout, etc) -> treat as MX error
         print(f"{email}: MX-записи отсутствуют или некорректны")
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Check MX records for emails from a file.")
     parser.add_argument("--input", "-i", default="emails_example.txt", help="Path to input file")
     args = parser.parse_args()
 
     try:
         with open(args.input, "r", encoding="utf-8") as f:
-            emails = f.readlines()
+            emails: list[str] = f.readlines()
     except FileNotFoundError:
         print(f"Error: File '{args.input}' not found.")
         sys.exit(1)
